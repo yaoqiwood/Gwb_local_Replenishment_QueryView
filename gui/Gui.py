@@ -4,6 +4,7 @@ from .tableWidget.Table import Table
 
 class Ui_MainWindow():
   def setupUi(self, MainWindow):
+    # 界面初始化
     MainWindow.setObjectName("MainWindow")
     MainWindow.resize(1280, 720)
     _translate = QtCore.QCoreApplication.translate

@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QHeaderView, QAbstractItemView
 
 
 class Table:
@@ -47,25 +48,36 @@ class Table:
     self.tableWidget.setItem(0, 5, item)
     item = QtWidgets.QTableWidgetItem()
     self.tableWidget.setItem(0, 6, item)
+    # header  TODO 这部分业务代码后续抽离
+    headerJSON = ['基本条码（货柜号）', '商品全名', '草稿数量',
+                  '销售数量', '库存数量', '成本单价', '是否建议补货']
+    self.setTableHeader(headerJSON)
     self.setData()
 
+  def setTableHeader(self, header):
+    for i in range(len(header)):
+      item = self.tableWidget.horizontalHeaderItem(i)
+      item.setText(self._translate("MainWindow", header[i]))
+      item.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
   def setData(self):
-    item = self.tableWidget.verticalHeaderItem(0)
-    item.setText(self._translate("MainWindow", "1"))
-    item = self.tableWidget.horizontalHeaderItem(0)
-    item.setText(self._translate("MainWindow", "基本条码（货柜号）"))
-    item = self.tableWidget.horizontalHeaderItem(1)
-    item.setText(self._translate("MainWindow", "商品全名"))
-    item = self.tableWidget.horizontalHeaderItem(2)
-    item.setText(self._translate("MainWindow", "草稿数量"))
-    item = self.tableWidget.horizontalHeaderItem(3)
-    item.setText(self._translate("MainWindow", "销售数量"))
-    item = self.tableWidget.horizontalHeaderItem(4)
-    item.setText(self._translate("MainWindow", "库存数量"))
-    item = self.tableWidget.horizontalHeaderItem(5)
-    item.setText(self._translate("MainWindow", "成本单价"))
-    item = self.tableWidget.horizontalHeaderItem(6)
-    item.setText(self._translate("MainWindow", "是否建议补货"))
+    # item = self.tableWidget.verticalHeaderItem(0)
+    # item.setText(self._translate("MainWindow", "1"))
+    # item = self.tableWidget.horizontalHeaderItem(0)
+    # item.setText(self._translate("MainWindow", "基本条码（货柜号）"))
+    # item = self.tableWidget.horizontalHeaderItem(1)
+    # item.setText(self._translate("MainWindow", "商品全名"))
+    # item = self.tableWidget.horizontalHeaderItem(2)
+    # item.setText(self._translate("MainWindow", "草稿数量"))
+    # item = self.tableWidget.horizontalHeaderItem(3)
+    # item.setText(self._translate("MainWindow", "销售数量"))
+    # item = self.tableWidget.horizontalHeaderItem(4)
+    # item.setText(self._translate("MainWindow", "库存数量"))
+    # item = self.tableWidget.horizontalHeaderItem(5)
+    # item.setText(self._translate("MainWindow", "成本单价"))
+    # item = self.tableWidget.horizontalHeaderItem(6)
+    # item.setText(self._translate("MainWindow", "是否建议补货"))
     __sortingEnabled = self.tableWidget.isSortingEnabled()
     self.tableWidget.setSortingEnabled(False)
     item = self.tableWidget.item(0, 0)
