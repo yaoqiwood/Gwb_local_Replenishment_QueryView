@@ -20,8 +20,11 @@ class Table:
     self.tableWidget.setObjectName("tableWidget")
     self.tableWidget.setColumnCount(7)
     self.tableWidget.setRowCount(2)
-    item = QtWidgets.QTableWidgetItem()
-    self.tableWidget.setVerticalHeaderItem(0, item)
+    # 这里的代码指定为列的行号是否显示
+    # item = QtWidgets.QTableWidgetItem()
+    # self.tableWidget.setVerticalHeaderItem(0, item)
+    # item = QtWidgets.QTableWidgetItem()
+    # self.tableWidget.setVerticalHeaderItem(1, item)
     item = QtWidgets.QTableWidgetItem()
     self.tableWidget.setHorizontalHeaderItem(0, item)
     item = QtWidgets.QTableWidgetItem()
@@ -50,6 +53,12 @@ class Table:
       item.setText(self._translate("MainWindow", header[i]))
       # item.setEditTriggers(QAbstractItemView.NoEditTriggers)
     self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    self.tableWidget.horizontalHeader().setSectionResizeMode(0,
+                                                             QHeaderView.Interactive)
+    self.tableWidget.setColumnWidth(0, 150)
+    self.tableWidget.horizontalHeader().setSectionResizeMode(1,
+                                                             QHeaderView.Interactive)
+    self.tableWidget.setColumnWidth(1, 200)
 
   def setData(self):
     item = QtWidgets.QTableWidgetItem()
