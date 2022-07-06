@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .tableWidget.Table import Table
+from .tableWidget.ReplenishTable import Table
 
 
 class Ui_MainWindow():
