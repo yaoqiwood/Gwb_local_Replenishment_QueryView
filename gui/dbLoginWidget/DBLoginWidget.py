@@ -68,17 +68,20 @@ class DBLoginWidget:
     self.lineEdit_2.setGeometry(QtCore.QRect(340, 110, 81, 31))
     self.lineEdit_2.setObjectName("lineEdit_2")
     self.lineEdit_2.setPlaceholderText('请输入端口')
+    self.lineEdit_2.setText(self.mainDbConfig['port'])
     # 数据库账号
     self.lineEdit_3 = QtWidgets.QLineEdit(Form)
     self.lineEdit_3.setGeometry(QtCore.QRect(150, 170, 271, 31))
     self.lineEdit_3.setObjectName("lineEdit_3")
     self.lineEdit_3.setPlaceholderText("请输入账号")
+    self.lineEdit_3.setText(self.mainDbConfig['user'])
     # 数据库密码
     self.lineEdit_4 = QtWidgets.QLineEdit(Form)
     self.lineEdit_4.setGeometry(QtCore.QRect(150, 230, 271, 31))
     self.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
     self.lineEdit_4.setObjectName("lineEdit_4")
     self.lineEdit_4.setPlaceholderText("请输入密码")
+    self.lineEdit_4.setText(self.mainDbConfig['password'])
 
     self.retranslateUi(Form)
     QtCore.QMetaObject.connectSlotsByName(Form)
