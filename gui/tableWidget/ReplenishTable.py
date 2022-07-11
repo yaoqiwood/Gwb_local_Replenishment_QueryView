@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QHeaderView, QAbstractItemView
+from dao.system.DBListMapper import DBListMapper
 
 
 class Table:
@@ -148,3 +149,6 @@ class Table:
     # self.treeWidget.topLevelItem(0).child(0).setText(
     #     0, self._translate("MainWindow", "水泵皮带轮"))
     # self.treeWidget.setSortingEnabled(__sortingEnabled)
+
+    db = DBListMapper()
+    db.findDBList()

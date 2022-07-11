@@ -1,4 +1,3 @@
-from pickle import NONE
 import pyodbc as db
 
 # dbConfig = {
@@ -11,10 +10,11 @@ import pyodbc as db
 # }
 
 # cursor = None
-# con = None
+con = None
 
 
 class DB:
+
   def dbConnect(self, dbConfig):
     try:
       # dbHostAddr = dbConfig['dbHost'] + ':' + dbConfig['port']
@@ -38,9 +38,21 @@ class DB:
       print('The try except is finished')
 
   def dbSelectExecute(self, cursor, sql):
-    return cursor.execute(sql)
+    try:
+      return cursor.execute(sql)
+    except:
+      print('sql wrong')
+    finally:
+      if (con is not None):
+        con.close()
 
-  def dbModifyExecute(self, cursor, con, sql):
-    count = cursor.execute(sql)
-    con.commit()
-    return count
+  def dbModifyExecute(self, cursor, sql):
+    try:
+      count = cursor.execute(sql)
+      con.commit()
+      return count
+    except:
+      print('sql wrong')
+    finally:
+      if (con is not None):
+        con.close()

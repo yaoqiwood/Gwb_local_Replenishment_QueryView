@@ -1,11 +1,12 @@
 import sys
-import gui.Gui as GUI
+from gui.dbLoginWidget.DBLoginWidget import DBLoginWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
+import utils.SystemConfig as SystemConfig
 
 # SHOW GUI
 app = QtWidgets.QApplication(sys.argv)
-MainWindow = QtWidgets.QMainWindow()
-ui = GUI.Ui_MainWindow()
-ui.setupUi(MainWindow)
-MainWindow.show()
+Form = QtWidgets.QWidget()
+ui = DBLoginWidget(SystemConfig.mainDBConfig)
+ui.setupUi(Form)
+Form.show()
 sys.exit(app.exec_())
