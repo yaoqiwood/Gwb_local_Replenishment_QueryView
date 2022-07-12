@@ -3,6 +3,11 @@ from .DBDrive import DB
 
 
 class DBRunner:
+  def dbMainLink(self, dbConfigInf):
+    db = DB()
+    dbConfigInf['driverName'] = '{SQL Server Native Client 10.0}'
+    return db.dbConnect(dbConfigInf)
+
   def dbSelectMasterExecute(self, sql):
     db = DB()
     dbConfig['driverName'] = '{SQL Server Native Client 10.0}'

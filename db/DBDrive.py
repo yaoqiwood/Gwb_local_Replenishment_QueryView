@@ -1,5 +1,5 @@
 import pyodbc as db
-
+import logging
 # dbConfig = {
 #     'driverName': '{SQL Server}',
 #     'dbHost': '127.0.0.1',
@@ -11,6 +11,7 @@ import pyodbc as db
 
 # cursor = None
 con = None
+logger = logging.getLogger(__name__)
 
 
 class DB:
@@ -19,12 +20,12 @@ class DB:
     try:
       # dbHostAddr = dbConfig['dbHost'] + ':' + dbConfig['port']
       conConfigInf = ('DRIVER='+dbConfig['driverName'] + '; ' if dbConfig['driverName'] else '') + 'SERVER=' + \
-          dbConfig['dbHost'] + ((':' + dbConfig['port']) if dbConfig['port'] else '') + '; DATABASE=' + \
+          dbConfig['dbHost'] + ((',' + dbConfig['port']) if dbConfig['port'] else '') + '; DATABASE=' + \
           dbConfig['dbName'] + '; UID=' + \
           dbConfig['dbUser'] + '; PWD=' + dbConfig['dbPass']
       print(conConfigInf)
       con = db.connect(conConfigInf)
-      return con
+      return {'success': True, 'con': con}
       # cursor = con.cursor()
       # Sample select query
       # cursor.execute("SELECT * FROM AccountModel")
@@ -32,16 +33,18 @@ class DB:
       # while row:
       #   print(row)
       #   row = cursor.fetchone()
-    except:
-      print('sql wrong')
+    except Exception as e:
+      logger.error('wrong:' + e)
+      raise Exception({'success': False, 'error': e})
     finally:
       print('The try except is finished')
 
   def dbSelectExecute(self, cursor, sql):
     try:
       return cursor.execute(sql)
-    except:
-      print('sql wrong')
+    except Exception as sqlError:
+      logger.error('sql wrong:' + sqlError)
+      raise Exception({'success': False, 'error': sqlError})
     finally:
       if (con is not None):
         con.close()
@@ -51,8 +54,9 @@ class DB:
       count = cursor.execute(sql)
       con.commit()
       return count
-    except:
-      print('sql wrong')
+    except Exception as sqlError:
+      logger.error('sql wrong:' + sqlError)
+      raise Exception({'success': False, 'error': sqlError})
     finally:
       if (con is not None):
         con.close()
