@@ -1,20 +1,37 @@
+from ast import For
 from PyQt5 import QtCore, QtGui, QtWidgets
 from controller.system.DBMainLinkController import DBMainLinkController
+from gui.hintBoard.HintBoard import HintBoard
 import sys
 mainDbConfig = {}
 
 
 class DBLoginWidget:
   isCheckBoxChecked = False
+  hintFrame = None
+  form = None
+  ui_f = None
 
   def __init__(self, dbConfig) -> None:
     self.mainDbConfig = dbConfig
+    self.hintFrame = QtWidgets.QFrame()
+    self.ui_f = HintBoard()
+    self.ui_f.setupUi(self.hintFrame)
+    # self.hintFrame.show()
     # print(self.mainDbConfig)
     pass
 
   def setupUi(self, Form):
+    self.form = Form
     Form.setObjectName("Form")
     Form.resize(447, 407)
+    # 禁用最大化
+    Form.setWindowFlags(
+        QtCore.Qt.WindowCloseButtonHint)
+    # 禁止拉伸窗口
+    Form.setFixedSize(Form.width(), Form.height())
+    # 标题
+    # Form.setWindowTitle("连接向导")
     self.label = QtWidgets.QLabel(Form)
     self.label.setGeometry(QtCore.QRect(0, 20, 451, 51))
     font = QtGui.QFont()
@@ -55,7 +72,7 @@ class DBLoginWidget:
     self.pushButton.clicked.connect(self.onConfirmLinkClick)
     # 关闭按钮
     self.pushButton_2 = QtWidgets.QPushButton(Form)
-    self.pushButton_2.setGeometry(QtCore.QRect(300, 350, 101, 31))
+    self.pushButton_2.setGeometry(QtCore.QRect(280, 350, 101, 31))
     self.pushButton_2.setObjectName("pushButton_2")
     self.pushButton_2.clicked.connect(self.exitTheProcess)
     self.label_5 = QtWidgets.QLabel(Form)
@@ -108,7 +125,7 @@ class DBLoginWidget:
 
   def retranslateUi(self, Form):
     _translate = QtCore.QCoreApplication.translate
-    Form.setWindowTitle(_translate("Form", "Form"))
+    Form.setWindowTitle(_translate("Form", "连接向导"))
     self.label.setText(_translate("Form", "请输入数据库配置"))
     self.label_2.setText(_translate("Form", "主数据库服务器IP："))
     self.label_3.setText(_translate("Form", "管理账号："))
@@ -131,6 +148,13 @@ class DBLoginWidget:
     dbConfig['dbName'] = self.lineEdit_5.text()
     dbConfig['dbUser'] = self.lineEdit_3.text()
     dbConfig['dbPass'] = self.lineEdit_4.text()
+
+    self.hintFrame.setWindowModality(QtCore.Qt.ApplicationModal)
+    self.hintFrame.show()
+    self.ui_f.loopHintText()
     # print(dbConfig)
-    print(DBMainLinkController().dbMainLink(dbConfig))
+    # print()
     # self.isCheckBoxChecked = se
+
+  def onMainDbLink(self, dbConfig):
+    DBMainLinkController().dbMainLink(dbConfig)
