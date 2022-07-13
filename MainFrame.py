@@ -9,4 +9,6 @@ Form = QtWidgets.QWidget()
 ui = DBLoginWidget(SystemConfig.mainDBConfig)
 ui.setupUi(Form)
 Form.show()
+# Frame.show()
+
 sys.exit(app.exec_())

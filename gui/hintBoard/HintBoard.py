@@ -1,8 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import time
+import _thread
 
 
 class HintBoard(object):
+  # 线程关闭器
+  threadBlocker = False
+
   def setupUi(self, Frame):
     Frame.setObjectName("Frame")
     Frame.resize(373, 184)
@@ -18,7 +22,7 @@ class HintBoard(object):
     self.pushButton = QtWidgets.QPushButton(Frame)
     self.pushButton.setGeometry(QtCore.QRect(130, 130, 101, 31))
     self.pushButton.setObjectName("pushButton")
-    self.pushButton.clicked.connect(Frame.close)
+    self.pushButton.clicked.connect(lambda: self.closeFrame(Frame))
 
     # 禁用最大化
     Frame.setWindowFlags(
@@ -36,15 +40,26 @@ class HintBoard(object):
 
   def loopHintText(self):
     # self.label.setText("正在连接")
+    self.threadBlocker = False
     self.label.setText("正在连接。。。")
-    # while True:
-    #   print(11112)
-    #   text = '.'
-    #   i = 0
-    #   for j in range(i):
-    #     i += 1
-    #     if (i == 5):
-    #       i = 0
-    #     text += '.'
-    #   # self.label.setText("正在连接" + text)
-    #   time.sleep(1)
+    _thread.start_new_thread(self.setLoopText, ())
+
+  def setLoopText(self):
+    i = 1
+    while True:
+      if (self.threadBlocker):
+        break
+      text = ''
+      for j in range(i):
+        i += 1
+        if (i == 5):
+          i = 0
+          text = ''
+        text += '。'
+        # print(text)
+      self.label.setText("正在连接" + text)
+      time.sleep(1)
+
+  def closeFrame(self, Frame):
+    Frame.close()
+    self.threadBlocker = True
