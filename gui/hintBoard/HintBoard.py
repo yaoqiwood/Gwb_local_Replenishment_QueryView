@@ -1,15 +1,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from thread.MainDbLinkThread import MainDbLinkThread
 import time
-import _thread
 
 
 class HintBoard(object):
-  # 线程关闭器
-  threadBlocker = False
+  # 线程
+  thread = None
+  frame = None
+
+  def closeEvent(self, event):
+    print('检测到关闭')
+    pass
 
   def setupUi(self, Frame):
+    self.frame = Frame
     Frame.setObjectName("Frame")
-    Frame.resize(373, 184)
+    Frame.resize(373, 190)
+
     self.label = QtWidgets.QLabel(Frame)
     self.label.setGeometry(QtCore.QRect(0, 30, 371, 51))
     font = QtGui.QFont()
@@ -19,14 +26,14 @@ class HintBoard(object):
     # self.label.setText("正在连接.")
     self.label.setAlignment(QtCore.Qt.AlignCenter)
     self.label.setObjectName("label")
-    self.pushButton = QtWidgets.QPushButton(Frame)
-    self.pushButton.setGeometry(QtCore.QRect(130, 130, 101, 31))
-    self.pushButton.setObjectName("pushButton")
-    self.pushButton.clicked.connect(lambda: self.closeFrame(Frame))
+    # self.pushButton = QtWidgets.QPushButton(Frame)
+    # self.pushButton.setGeometry(QtCore.QRect(130, 130, 101, 31))
+    # self.pushButton.setObjectName("pushButton")
+    # self.pushButton.clicked.connect(lambda: self.closeFrame(Frame))
 
     # 禁用最大化
     Frame.setWindowFlags(
-        QtCore.Qt.WindowCloseButtonHint)
+        QtCore.Qt.FramelessWindowHint)
     # 禁止拉伸窗口
     Frame.setFixedSize(Frame.width(), Frame.height())
 
@@ -36,30 +43,21 @@ class HintBoard(object):
   def retranslateUi(self, Frame):
     _translate = QtCore.QCoreApplication.translate
     Frame.setWindowTitle(_translate("Frame", "Frame"))
-    self.pushButton.setText(_translate("Frame", "取消"))
+    # self.pushButton.setText(_translate("Frame", "取消"))
+
+  def onMainDbLink(self):
+    self.loopHintText()
 
   def loopHintText(self):
     # self.label.setText("正在连接")
-    self.threadBlocker = False
-    self.label.setText("正在连接。。。")
-    _thread.start_new_thread(self.setLoopText, ())
+    # self.threadBlocker = False
+    self.label.setText("正在连接。")
 
-  def setLoopText(self):
-    i = 1
-    while True:
-      if (self.threadBlocker):
-        break
-      text = ''
-      for j in range(i):
-        i += 1
-        if (i == 5):
-          i = 0
-          text = ''
-        text += '。'
-        # print(text)
-      self.label.setText("正在连接" + text)
-      time.sleep(1)
+  def setLoopText(self, dbConfig):
+    self.thread = MainDbLinkThread('linkMainDb', 1, self, dbConfig)
+    self.thread.start()
 
   def closeFrame(self, Frame):
     Frame.close()
-    self.threadBlocker = True
+    self.thread.exitFlag = True
+    # self.thread.join()

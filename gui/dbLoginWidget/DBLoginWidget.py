@@ -1,6 +1,5 @@
 from ast import For
 from PyQt5 import QtCore, QtGui, QtWidgets
-from controller.system.DBMainLinkController import DBMainLinkController
 from gui.hintBoard.HintBoard import HintBoard
 import sys
 mainDbConfig = {}
@@ -151,10 +150,9 @@ class DBLoginWidget:
 
     self.hintFrame.setWindowModality(QtCore.Qt.ApplicationModal)
     self.hintFrame.show()
-    self.ui_f.loopHintText()
+    self.ui_f.setLoopText(dbConfig)
+    # _thread.start_new_thread(self.setLoopText, ())
+    # self.ui_f.onMainDbLink(dbConfig, self.hintFrame)
     # print(dbConfig)
     # print()
     # self.isCheckBoxChecked = se
-
-  def onMainDbLink(self, dbConfig):
-    DBMainLinkController().dbMainLink(dbConfig)
