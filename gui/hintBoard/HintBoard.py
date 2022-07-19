@@ -1,12 +1,17 @@
+from copyreg import constructor
 from PyQt5 import QtCore, QtGui, QtWidgets
+from controller.system.DBMainLinkController import DBMainLinkController
 from thread.MainDbLinkThread import MainDbLinkThread
+from PyQt5.QtWidgets import QMessageBox
 import time
 
 
-class HintBoard(object):
+class HintBoard():
   # 线程
   thread = None
   frame = None
+  # 信号收发
+  # signal = QtCore.pyqtSignal(str)
 
   def closeEvent(self, event):
     print('检测到关闭')
@@ -23,7 +28,7 @@ class HintBoard(object):
     font.setFamily("AcadEref")
     font.setPointSize(20)
     self.label.setFont(font)
-    # self.label.setText("正在连接.")
+    self.label.setText("正在连接.")
     self.label.setAlignment(QtCore.Qt.AlignCenter)
     self.label.setObjectName("label")
     # self.pushButton = QtWidgets.QPushButton(Frame)
@@ -40,6 +45,8 @@ class HintBoard(object):
     self.retranslateUi(Frame)
     QtCore.QMetaObject.connectSlotsByName(Frame)
 
+    # self.signal.connect(self.closeThread)
+
   def retranslateUi(self, Frame):
     _translate = QtCore.QCoreApplication.translate
     Frame.setWindowTitle(_translate("Frame", "Frame"))
@@ -53,11 +60,36 @@ class HintBoard(object):
     # self.threadBlocker = False
     self.label.setText("正在连接。")
 
+  def closeThread(self, e):
+    result = QMessageBox.critical(
+        None, '提示: 连接错误', str(e))
+
   def setLoopText(self, dbConfig):
-    self.thread = MainDbLinkThread('linkMainDb', 1, self, dbConfig)
-    self.thread.start()
+    self.label.setText("正在连接。。。。。")
+    try:
+      linkOut = DBMainLinkController().dbMainLink(dbConfig)
+      if linkOut:
+        self.closeFrame(self.frame)
+    except Exception as e:
+      # print(e)
+      self.closeThread(e)
+      self.closeFrame(self.frame)
+
+      # slot = MessageBox()
+      # self.linkThread = MainDbLinkThread(
+      #     'linkMainDb', 1, self, dbConfig)
+      # self.thread.signal.connect(slot.getMessage)
+      # self.thread = QtCore.QThread()
+      # self.thread.started.connect(self.linkThread)
+      # self.thread.start()
+      # pass
 
   def closeFrame(self, Frame):
     Frame.close()
-    self.thread.exitFlag = True
+    # self.thread.exitFlag = True
     # self.thread.join()
+
+
+# class MessageBox(QtCore.QObject):
+#   def getMessage(self, e):
+#     self.closeThread(e)

@@ -1,12 +1,16 @@
 from .DBConfig import dbConfig
 from .DBDrive import DB
+import pyodbc
 
 
 class DBRunner:
   def dbMainLink(self, dbConfigInf):
-    db = DB()
-    dbConfigInf['driverName'] = '{SQL Server Native Client 10.0}'
-    return db.dbConnect(dbConfigInf)
+    try:
+      db = DB()
+      dbConfigInf['driverName'] = '{SQL Server Native Client 10.0}'
+      return db.dbConnect(dbConfigInf)
+    except Exception as e:
+      raise
 
   def dbSelectMasterExecute(self, sql):
     db = DB()

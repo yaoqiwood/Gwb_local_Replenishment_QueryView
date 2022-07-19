@@ -1,16 +1,24 @@
-from controller.system.DBMainLinkController import DBMainLinkController
+from PyQt5 import QtCore
 import threading
 import time
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
 
 
-class MainDbLinkThread (threading.Thread):
+class MainDbLinkThread (QtCore.QObject):
   exitFlag = False
   sleepSec = 1
   other = None
   dbConfig = {}
 
+  # 信号收发
+  # signal = QtCore.pyqtSignal(object)
+
   def __init__(self, name, sleepSec, other, dbConfig):
-    threading.Thread.__init__(self)
+    super(MainDbLinkThread, self).__init__()
+    # threading.Thread.__init__(self)
     # self.threadID = threadID
     self.name = name
     self.sleepSec = sleepSec
@@ -19,12 +27,26 @@ class MainDbLinkThread (threading.Thread):
     pass
 
   def run(self):
-    self.other.label.setText("正在连接。。。。。")
-    linkOut = DBMainLinkController().dbMainLink(self.dbConfig)
-    if linkOut:
-      self.other.closeFrame(self.other.frame)
-    # self.play()
     pass
+    try:
+      pass
+      # self.other.label.setText("正在连接。。。。。")
+      # linkOut = DBMainLinkController().dbMainLink(self.dbConfig)
+      # if linkOut:
+      #   self.other.closeFrame(self.other.frame)
+      # self.play()
+    except Exception as e:
+      pass
+      # self.other.signal.emit(e)
+      # self.callBack(e)
+
+      # self.bucket.put(sys.exc_info())
+      # raise
+      # print(e)
+      # logger.error('数据库错误：' + str(e['error']))
+    finally:
+      # logger.info('查询结束')
+      pass
 
   def play(self):
     i = 1

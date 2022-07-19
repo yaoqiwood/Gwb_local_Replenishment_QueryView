@@ -33,9 +33,10 @@ class DB:
       # while row:
       #   print(row)
       #   row = cursor.fetchone()
-    except Exception as e:
-      logger.error('wrong:' + e)
-      raise Exception({'success': False, 'error': e})
+    except db.Error as e:
+      # print(e)
+      # logger.error('wrong:' + e)
+      raise
     finally:
       print('The try except is finished')
 

@@ -6,4 +6,8 @@ class DBMainLinkService:
     pass
 
   def dbMainLink(self, dbConfigInf):
-    return DBMainLinkMapper().dbMainLink(dbConfigInf)['success']
+    try:
+      return DBMainLinkMapper().dbMainLink(dbConfigInf)['success']
+    except Exception as e:
+      raise
+      # pass

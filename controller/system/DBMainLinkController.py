@@ -6,4 +6,7 @@ class DBMainLinkController:
     pass
 
   def dbMainLink(self, dbConfigInf):
-    return DBMainLinkService().dbMainLink(dbConfigInf)
+    try:
+      return DBMainLinkService().dbMainLink(dbConfigInf)
+    except Exception as e:
+      raise
