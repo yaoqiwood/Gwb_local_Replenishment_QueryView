@@ -43,9 +43,9 @@ class DB:
   def dbSelectExecute(self, cursor, sql):
     try:
       return cursor.execute(sql)
-    except Exception as sqlError:
-      logger.error('sql wrong:' + sqlError)
-      raise Exception({'success': False, 'error': sqlError})
+    except db.Error as sqlError:
+      # logger.error('sql wrong:' + sqlError)
+      raise
     finally:
       if (con is not None):
         con.close()
@@ -55,9 +55,9 @@ class DB:
       count = cursor.execute(sql)
       con.commit()
       return count
-    except Exception as sqlError:
-      logger.error('sql wrong:' + sqlError)
-      raise Exception({'success': False, 'error': sqlError})
+    except db.Error as sqlError:
+      # logger.error('sql wrong:' + sqlError)
+      raise
     finally:
       if (con is not None):
         con.close()

@@ -13,9 +13,7 @@ class DBLoginWidget:
 
   def __init__(self, dbConfig) -> None:
     self.mainDbConfig = dbConfig
-    self.hintFrame = QtWidgets.QFrame()
-    self.ui_f = HintBoard()
-    self.ui_f.setupUi(self.hintFrame)
+
     # self.hintFrame.show()
     # print(self.mainDbConfig)
     pass
@@ -102,7 +100,7 @@ class DBLoginWidget:
     # 数据库密码
     self.lineEdit_4 = QtWidgets.QLineEdit(Form)
     self.lineEdit_4.setGeometry(QtCore.QRect(150, 270, 271, 31))
-    self.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
+    self.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.Password)
     self.lineEdit_4.setObjectName("lineEdit_4")
     self.lineEdit_4.setPlaceholderText("请输入密码")
     self.lineEdit_4.setText(self.mainDbConfig['password'])
@@ -135,7 +133,11 @@ class DBLoginWidget:
     self.label_5.setText(_translate("Form", "端口:"))
     self.label_6.setText(_translate("Form", "数据库名："))
 
+    self.hintFrame = QtWidgets.QFrame()
+    self.ui_f = HintBoard()
+    self.ui_f.setupUi(self.hintFrame, self.form)
   # 关闭主程序事件（退出
+
   def exitTheProcess(self):
     sys.exit(0)
 

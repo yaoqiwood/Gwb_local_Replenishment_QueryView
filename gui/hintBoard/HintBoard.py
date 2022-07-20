@@ -3,6 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from controller.system.DBMainLinkController import DBMainLinkController
 from thread.MainDbLinkThread import MainDbLinkThread
 from PyQt5.QtWidgets import QMessageBox
+from gui.dbTableWidget.DbTableWidget import DbTableWidget
+import utils.Glo as Glo
 import time
 
 
@@ -10,6 +12,7 @@ class HintBoard():
   # 线程
   thread = None
   frame = None
+  dbTableFrame = None
   # 信号收发
   # signal = QtCore.pyqtSignal(str)
 
@@ -17,8 +20,9 @@ class HintBoard():
     print('检测到关闭')
     pass
 
-  def setupUi(self, Frame):
+  def setupUi(self, Frame, linkFrame):
     self.frame = Frame
+    self.linkFrame = linkFrame
     Frame.setObjectName("Frame")
     Frame.resize(373, 190)
 
@@ -47,6 +51,10 @@ class HintBoard():
 
     # self.signal.connect(self.closeThread)
 
+    # DBTable
+    self.dbForm = QtWidgets.QWidget()
+    self.dbTable = DbTableWidget(self.dbForm)
+
   def retranslateUi(self, Frame):
     _translate = QtCore.QCoreApplication.translate
     Frame.setWindowTitle(_translate("Frame", "Frame"))
@@ -70,8 +78,14 @@ class HintBoard():
       linkOut = DBMainLinkController().dbMainLink(dbConfig)
       if linkOut:
         self.closeFrame(self.frame)
+        QMessageBox.information(None, ' 提示 ', '  连接成功！  ')
+        self.dbForm.show()
+        self.linkFrame.close()
+        # 设置config
+        Glo.set_value('dbConfig', dbConfig)
+        self.dbTable.loadDBListData()
     except Exception as e:
-      # print(e)
+      print(e)
       self.closeThread(e)
       self.closeFrame(self.frame)
 
