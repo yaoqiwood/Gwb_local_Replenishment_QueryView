@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QHeaderView
+from PyQt5.QtWidgets import QHeaderView, QAbstractItemView
 from controller.system.DBListController import DBListController
 
 
@@ -10,12 +10,14 @@ class DbTableWidget:
     self.tableWidget = QtWidgets.QTableWidget(Form)
     self.tableWidget.setGeometry(QtCore.QRect(160, 90, 256, 192))
     self.tableWidget.setObjectName("tableWidget")
-    self.tableWidget.setColumnCount(2)
+    self.tableWidget.setColumnCount(3)
     self.tableWidget.setRowCount(0)
     item = QtWidgets.QTableWidgetItem()
     self.tableWidget.setHorizontalHeaderItem(0, item)
     item = QtWidgets.QTableWidgetItem()
     self.tableWidget.setHorizontalHeaderItem(1, item)
+    item = QtWidgets.QTableWidgetItem()
+    self.tableWidget.setHorizontalHeaderItem(2, item)
     self.label = QtWidgets.QLabel(Form)
     self.label.setGeometry(QtCore.QRect(10, 20, 551, 51))
     font = QtGui.QFont()
@@ -42,17 +44,27 @@ class DbTableWidget:
     self.retranslateUi(Form)
     QtCore.QMetaObject.connectSlotsByName(Form)
 
+    # 按钮函数调用
+    self.pushButton.clicked.connect(self.onMainDbSelectConfirm)
+
   def retranslateUi(self, Form):
     _translate = QtCore.QCoreApplication.translate
     Form.setWindowTitle(_translate("Form", "登陆向导(数据库)"))
     item = self.tableWidget.horizontalHeaderItem(0)
-    item.setText(_translate("Form", "账套名称"))
+    item.setText(_translate("Form", "ID"))
     item = self.tableWidget.horizontalHeaderItem(1)
+    item.setText(_translate("Form", "账套名称"))
+    item = self.tableWidget.horizontalHeaderItem(2)
     item.setText(_translate("Form", "数据库名"))
-    self.label.setText(_translate("Form", "请选择数据库"))
+
+    self.label.setText(_translate("Form", "请选择主数据库"))
     self.pushButton.setText(_translate("Form", "确定"))
     self.pushButton_2.setText(_translate("Form", "返回"))
     self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+    self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+    # 设置第三列隐藏列
+    self.tableWidget.setColumnHidden(0, True)
     # self.tableWidget.horizontalHeader().setSectionResizeMode(0,
     #                                                          QHeaderView.Interactive)
     # self.tableWidget.setColumnWidth(0, 100)
@@ -69,12 +81,25 @@ class DbTableWidget:
       item = QtWidgets.QTableWidgetItem()
       self.tableWidget.setItem(i, 0, item)
       item = self.tableWidget.item(i, 0)
-      item.setText(_translate("MainWindow", dataResult[i].db_remark))
+      item.setText(_translate("MainWindow", str(dataResult[i].id)))
       # 不可编辑
       item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
       item = QtWidgets.QTableWidgetItem()
       self.tableWidget.setItem(i, 1, item)
       item = self.tableWidget.item(i, 1)
+      item.setText(_translate("MainWindow", dataResult[i].db_remark))
+      # 不可编辑
+      item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+      # ID
+      item = QtWidgets.QTableWidgetItem()
+      self.tableWidget.setItem(i, 2, item)
+      item = self.tableWidget.item(i, 2)
       item.setText(_translate("MainWindow", dataResult[i].db_name))
       # 不可编辑
       item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+    # 选择行
+    self.tableWidget.selectRow(0)
+
+  def onMainDbSelectConfirm(self):
+    # 确定选择
+    print(self.tableWidget.currentRow())
