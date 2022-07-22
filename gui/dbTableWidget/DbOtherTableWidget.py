@@ -1,22 +1,23 @@
+from os import O_TRUNC
+from utils.enum import Enum
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QHeaderView, QAbstractItemView, QMessageBox, QFrame
+from PyQt5.QtWidgets import QHeaderView, QAbstractItemView, QMessageBox
 from controller.system.DBListController import DBListController
-from .DbOtherTableWidget import DbOtherTableWidget
 import utils.Glo as Glo
-import utils.enum.Enum as ENUM
 import sys
 
 
-class DbTableWidget:
+class DbOtherTableWidget:
   selfForm = None
 
-  def __init__(self, Form) -> None:
+  def __init__(self, Form, mainDBFrame) -> None:
     self.selfForm = Form
+    self.mainDBFrame = mainDBFrame
     Form.setObjectName("Form")
     Form.resize(570, 430)
     self.tableWidget = QtWidgets.QTableWidget(Form)
     self.tableWidget.setGeometry(QtCore.QRect(160, 90, 256, 192))
-    self.tableWidget.setObjectName("tableWidget")
+    self.tableWidget.setObjectName("tableOtherWidget")
     self.tableWidget.setColumnCount(3)
     self.tableWidget.setRowCount(0)
     item = QtWidgets.QTableWidgetItem()
@@ -56,10 +57,6 @@ class DbTableWidget:
     # 关闭窗口
     self.pushButton_2.clicked.connect(self.exitDbFrame)
 
-    # 创建其他选择数据库表格
-    self.otherDbForm = QtWidgets.QWidget()
-    self.otherDbWidget = DbOtherTableWidget(self.otherDbForm, self.selfForm)
-
   def retranslateUi(self, Form):
     _translate = QtCore.QCoreApplication.translate
     Form.setWindowTitle(_translate("Form", "登陆向导(数据库)"))
@@ -70,12 +67,12 @@ class DbTableWidget:
     item = self.tableWidget.horizontalHeaderItem(2)
     item.setText(_translate("Form", "数据库名"))
 
-    self.label.setText(_translate("Form", "请选择主数据库"))
+    self.label.setText(_translate("Form", "请选择其他数据库"))
     self.pushButton.setText(_translate("Form", "确定"))
-    self.pushButton_2.setText(_translate("Form", "退出"))
+    self.pushButton_2.setText(_translate("Form", "返回"))
     self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-    self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+    # self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
     # 设置第三列隐藏列
     self.tableWidget.setColumnHidden(0, True)
     # 固定行高
@@ -88,10 +85,25 @@ class DbTableWidget:
     #                                                          QHeaderView.Interactive)
     # self.tableWidget.setColumnWidth(1, 120)
 
+  def filterOtherDB(self, list):
+    for n in range(len(list)):
+      if list[n].db_name == Glo.get_value(Enum.getCode(Enum.DBKey, 'MASTER')).db_name:
+        return n
+        # pass
+    return None
+
   def loadDBListData(self):
     _translate = QtCore.QCoreApplication.translate
     dbController = DBListController()
+    # print(Glo.get_value(Enum.getCode(Enum.DBKey, 'MASTER')).db_name)
+    # 去掉主数据库
     self.dataResult = dbController.findDBList()
+    exceptNum = self.filterOtherDB(self.dataResult)
+    print(exceptNum)
+    if exceptNum is None:
+      return
+    print(self.dataResult.pop(exceptNum))
+    print(self.dataResult)
     self.tableWidget.setRowCount(len(self.dataResult))
     for i in range(len(self.dataResult)):
       item = QtWidgets.QTableWidgetItem()
@@ -119,18 +131,16 @@ class DbTableWidget:
   def onMainDbSelectConfirm(self):
     # 确定选择
     # print(self.dataResult[self.tableWidget.currentRow()].db_name)
-    Glo.set_value(ENUM.getCode(ENUM.DBKey, 'MASTER'),
-                  self.dataResult[self.tableWidget.currentRow()])
-    QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
-    self.selfForm.hide()
-
-    self.otherDbForm.show()
-    self.otherDbWidget.loadDBListData()
+    # Glo.set_value(ENUM.getCode(ENUM.DBKey, 'MASTER'),
+    #               self.dataResult[self.tableWidget.currentRow()])
+    # QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
+    self.selfForm.close()
     # print(Glo.get_value(ENUM.getCode(ENUM.DBKey, 'MASTER')))
     # Glo.set_value(ENUM.DBKey['MASTER']['code'],
     #               self.dataResult[self.tableWidget.currentRow()])
     # Glo.get_value(Enum.DBKey['M'])
 
   def exitDbFrame(self):
-    sys.exit(0)
+    self.selfForm.close()
+    self.mainDBFrame.show()
     pass

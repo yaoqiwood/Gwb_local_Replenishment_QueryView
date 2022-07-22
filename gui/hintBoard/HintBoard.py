@@ -1,11 +1,8 @@
-from copyreg import constructor
 from PyQt5 import QtCore, QtGui, QtWidgets
 from controller.system.DBMainLinkController import DBMainLinkController
-from thread.MainDbLinkThread import MainDbLinkThread
 from PyQt5.QtWidgets import QMessageBox
 from gui.dbTableWidget.DbTableWidget import DbTableWidget
 import utils.Glo as Glo
-import time
 
 
 class HintBoard():
@@ -79,8 +76,8 @@ class HintBoard():
       if linkOut:
         self.closeFrame(self.frame)
         QMessageBox.information(None, ' 提示 ', '  连接成功！  ')
-        self.dbForm.show()
         self.linkFrame.close()
+        self.dbForm.show()
         # 设置config
         Glo.set_value('dbConfig', dbConfig)
         self.dbTable.loadDBListData()
