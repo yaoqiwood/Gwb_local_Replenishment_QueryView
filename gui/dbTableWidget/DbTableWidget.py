@@ -1,10 +1,17 @@
+from enum import Enum
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QHeaderView, QAbstractItemView
+from PyQt5.QtWidgets import QHeaderView, QAbstractItemView, QMessageBox
 from controller.system.DBListController import DBListController
+import utils.Glo as Glo
+import utils.enum.Enum as ENUM
+import sys
 
 
 class DbTableWidget:
+  selfForm = None
+
   def __init__(self, Form) -> None:
+    self.selfForm = Form
     Form.setObjectName("Form")
     Form.resize(570, 430)
     self.tableWidget = QtWidgets.QTableWidget(Form)
@@ -46,6 +53,8 @@ class DbTableWidget:
 
     # 按钮函数调用
     self.pushButton.clicked.connect(self.onMainDbSelectConfirm)
+    # 关闭窗口
+    self.pushButton_2.clicked.connect(self.exitDbFrame)
 
   def retranslateUi(self, Form):
     _translate = QtCore.QCoreApplication.translate
@@ -59,12 +68,15 @@ class DbTableWidget:
 
     self.label.setText(_translate("Form", "请选择主数据库"))
     self.pushButton.setText(_translate("Form", "确定"))
-    self.pushButton_2.setText(_translate("Form", "返回"))
+    self.pushButton_2.setText(_translate("Form", "退出"))
     self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
     self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
     # 设置第三列隐藏列
     self.tableWidget.setColumnHidden(0, True)
+    # 固定行高
+    self.tableWidget.horizontalHeader().setSectionResizeMode(
+        0, QHeaderView.ResizeToContents)
     # self.tableWidget.horizontalHeader().setSectionResizeMode(0,
     #                                                          QHeaderView.Interactive)
     # self.tableWidget.setColumnWidth(0, 100)
@@ -75,26 +87,26 @@ class DbTableWidget:
   def loadDBListData(self):
     _translate = QtCore.QCoreApplication.translate
     dbController = DBListController()
-    dataResult = dbController.findDBList()
-    self.tableWidget.setRowCount(len(dataResult))
-    for i in range(len(dataResult)):
+    self.dataResult = dbController.findDBList()
+    self.tableWidget.setRowCount(len(self.dataResult))
+    for i in range(len(self.dataResult)):
       item = QtWidgets.QTableWidgetItem()
       self.tableWidget.setItem(i, 0, item)
       item = self.tableWidget.item(i, 0)
-      item.setText(_translate("MainWindow", str(dataResult[i].id)))
+      item.setText(_translate("MainWindow", str(self.dataResult[i].id)))
       # 不可编辑
       item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
       item = QtWidgets.QTableWidgetItem()
       self.tableWidget.setItem(i, 1, item)
       item = self.tableWidget.item(i, 1)
-      item.setText(_translate("MainWindow", dataResult[i].db_remark))
+      item.setText(_translate("MainWindow", self.dataResult[i].db_remark))
       # 不可编辑
       item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
       # ID
       item = QtWidgets.QTableWidgetItem()
       self.tableWidget.setItem(i, 2, item)
       item = self.tableWidget.item(i, 2)
-      item.setText(_translate("MainWindow", dataResult[i].db_name))
+      item.setText(_translate("MainWindow", self.dataResult[i].db_name))
       # 不可编辑
       item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
     # 选择行
@@ -102,4 +114,16 @@ class DbTableWidget:
 
   def onMainDbSelectConfirm(self):
     # 确定选择
-    print(self.tableWidget.currentRow())
+    # print(self.dataResult[self.tableWidget.currentRow()].db_name)
+    Glo.set_value(ENUM.getCode(ENUM.DBKey, 'MASTER'),
+                  self.dataResult[self.tableWidget.currentRow()])
+    QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
+    self.selfForm.close()
+    # print(Glo.get_value(ENUM.getCode(ENUM.DBKey, 'MASTER')))
+    # Glo.set_value(ENUM.DBKey['MASTER']['code'],
+    #               self.dataResult[self.tableWidget.currentRow()])
+    # Glo.get_value(Enum.DBKey['M'])
+
+  def exitDbFrame(self):
+    sys.exit(0)
+    pass
