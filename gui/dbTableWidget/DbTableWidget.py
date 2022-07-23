@@ -119,9 +119,9 @@ class DbTableWidget:
   def onMainDbSelectConfirm(self):
     # 确定选择
     # print(self.dataResult[self.tableWidget.currentRow()].db_name)
-    Glo.set_value(ENUM.getCode(ENUM.DBKey, 'MASTER'),
+    Glo.set_value(ENUM.DBKey.MASTER.value,
                   self.dataResult[self.tableWidget.currentRow()])
-    QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
+    # QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
     self.selfForm.hide()
 
     self.otherDbForm.show()

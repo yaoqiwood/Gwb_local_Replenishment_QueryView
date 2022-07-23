@@ -1,9 +1,11 @@
 from os import O_TRUNC
-from utils.enum import Enum
+
+from tomlkit import item
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QHeaderView, QAbstractItemView, QMessageBox
 from controller.system.DBListController import DBListController
 import utils.Glo as Glo
+import utils.enum.Enum as ENUM
 import sys
 
 
@@ -87,7 +89,7 @@ class DbOtherTableWidget:
 
   def filterOtherDB(self, list):
     for n in range(len(list)):
-      if list[n].db_name == Glo.get_value(Enum.getCode(Enum.DBKey, 'MASTER')).db_name:
+      if list[n].db_name == Glo.get_value(ENUM.DBKey.MASTER.value).db_name:
         return n
         # pass
     return None
@@ -102,8 +104,9 @@ class DbOtherTableWidget:
     print(exceptNum)
     if exceptNum is None:
       return
-    print(self.dataResult.pop(exceptNum))
-    print(self.dataResult)
+    self.dataResult.pop(exceptNum)
+    # print(self.dataResult.pop(exceptNum))
+    # print(self.dataResult)
     self.tableWidget.setRowCount(len(self.dataResult))
     for i in range(len(self.dataResult)):
       item = QtWidgets.QTableWidgetItem()
@@ -133,7 +136,10 @@ class DbOtherTableWidget:
     # print(self.dataResult[self.tableWidget.currentRow()].db_name)
     # Glo.set_value(ENUM.getCode(ENUM.DBKey, 'MASTER'),
     #               self.dataResult[self.tableWidget.currentRow()])
-    # QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
+    selectedRows = self.getSelectRowsItem(self.getSelectedRows(
+        self.tableWidget.selectedItems()), self.dataResult)
+    Glo.set_value(ENUM.DBKey.OTHER.value, selectedRows)
+    QMessageBox.information(None, ' 提示 ', '  选择成功！  ')
     self.selfForm.close()
     # print(Glo.get_value(ENUM.getCode(ENUM.DBKey, 'MASTER')))
     # Glo.set_value(ENUM.DBKey['MASTER']['code'],
@@ -144,3 +150,17 @@ class DbOtherTableWidget:
     self.selfForm.close()
     self.mainDBFrame.show()
     pass
+
+  def getSelectedRows(self, selectedItem):
+    rows = []
+    for selectedRow in selectedItem:
+      r_index = selectedRow.row()
+      if r_index not in rows:
+        rows.append(r_index)
+    return rows
+
+  def getSelectRowsItem(self, rows, dataResult):
+    items = []
+    for index in rows:
+      items.append(dataResult[index])
+    return items

@@ -1,13 +1,9 @@
-DBKey = {
-    'MASTER': {
-        'name': 'MASTER',
-        'code': 'MASTER_DB'
-    },
-    'OTHER': {
-        'name': 'OTHER',
-        'code': 'LIST_DB'
-    }
-}
+from enum import Enum
+
+
+class DBKey(Enum):
+  MASTER = 'MASTER_DB'
+  OTHER = 'LIST_DB'
 
 
 def getName(enum, enum_name):
